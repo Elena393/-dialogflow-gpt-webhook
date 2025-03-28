@@ -1,3 +1,11 @@
+const express = require("express");
+const axios = require("axios");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+
+const app = express();
+app.use(bodyParser.json());
+
 app.post("/webhook", async (req, res) => {
   console.log("Webhook llamado desde Dialogflow");
 
@@ -21,10 +29,16 @@ app.post("/webhook", async (req, res) => {
 
     const reply = response.data.choices[0].message.content;
     res.json({ fulfillmentText: reply });
+
   } catch (error) {
     console.error("Error al llamar a OpenAI:", error.response?.data || error.message);
     res.json({
       fulfillmentText: "Hubo un error al conectar con la IA.",
     });
   }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Servidor funcionando en puerto " + PORT);
 });
